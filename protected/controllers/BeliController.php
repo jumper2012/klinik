@@ -60,6 +60,14 @@ class BeliController extends Controller {
         //$this->redirect(array('beli/create'));
     }
 
+   public function actionSuksesKeterangan($id) {
+        //$this->render('sukses');
+        Yii::app()->user->setFlash('pembelian','Pembelian Berhasil dilakukan');
+        $result_nama = Yii::app()->db->createCommand("SELECT * FROM list_penjualan WHERE `id_jual`= '$id'")->queryAll();
+        $this->render('suksesKeterangan',array('result'=>$result_nama));
+        //$this->redirect(array('beli/create'));
+    }
+    
     /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.

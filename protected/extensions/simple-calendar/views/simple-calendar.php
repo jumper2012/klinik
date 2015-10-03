@@ -25,7 +25,7 @@
                     }
                     else
                     {
-                        $mothx = $this->$month;
+                        $monthx = $this->month;
                     }
                     
                     if($day < 10)

@@ -11,6 +11,7 @@
  * @property integer $total
  * @property string $id_jual
  * @property string $id_obat
+ * @property string $keterangan
  *
  * The followings are the available model relations:
  * @property Jual $idJual
@@ -47,9 +48,10 @@ class ListPenjualan extends CActiveRecord
 			array('qty, harga_satuan, total', 'numerical', 'integerOnly'=>true),
 			array('nama_obat', 'length', 'max'=>32),
 			array('id_jual, id_obat', 'length', 'max'=>10),
+			array('keterangan', 'length', 'max'=>200),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id_list_penjualan, nama_obat, qty, harga_satuan, total, id_jual, id_obat', 'safe', 'on'=>'search'),
+			array('id_list_penjualan, nama_obat, qty, harga_satuan, total, id_jual, id_obat, keterangan', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -79,6 +81,7 @@ class ListPenjualan extends CActiveRecord
 			'total' => 'Total',
 			'id_jual' => 'Id Jual',
 			'id_obat' => 'Id Obat',
+			'keterangan' => '',
 		);
 	}
 
@@ -100,6 +103,7 @@ class ListPenjualan extends CActiveRecord
 		$criteria->compare('total',$this->total);
 		$criteria->compare('id_jual',$this->id_jual,true);
 		$criteria->compare('id_obat',$this->id_obat,true);
+		$criteria->compare('keterangan',$this->keterangan,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -65,7 +65,42 @@ class JualController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionCreateKeterangan() {
-        $this->render('beli_keterangan');
+        $model = new Jual;
+        $model2 = new Obat;
+        $model3 = new ListPenjualan;
+
+        if (isset($_POST['Obat'])) {
+            if ($_POST['Obat']['jumlah'] == 0) {
+                $this->redirect(array('create'));
+            }
+            $model->tgltrans = date('Y-m-d');
+            $model->save();
+            $model3->id_jual = $model->id_jual;
+            $id_obat = $_POST['Obat']['id_obat'];
+            $keterangan = $_POST['ListPenjualan']['keterangan'];
+            $result_nama = Yii::app()->db->createCommand("SELECT nama FROM obat WHERE `id_obat`= '$id_obat'")->queryAll();
+            $nama = $result_nama["0"]["nama"];
+
+            $result_harga_satuan = Yii::app()->db->createCommand("SELECT hargajual FROM obat WHERE `id_obat`= '$id_obat'")->queryAll();
+            $harga_satuan = $result_harga_satuan["0"]["hargajual"];
+
+            $total_harga = $_POST['Obat']['jumlah'] * $harga_satuan;
+
+            $model3->nama_obat = $nama;
+
+            $model3->qty = $_POST['Obat']['jumlah'];
+            $model3->harga_satuan = $harga_satuan;
+            $model3->total = $total_harga;
+            $model3->id_obat = $id_obat;
+            $model3->keterangan = $keterangan;
+            if ($model3->save())
+            $connection_delete = Yii::app()->db;
+            $connection_delete->createCommand("DELETE FROM dummy_list_obat WHERE id_obat='$id_obat'")->execute();
+            $this->redirect(array('createKeteranganExisting', 'id' => $model->id_jual,'keterangan'=>$keterangan));
+        }
+        $this->render('createKeterangan', array(
+            'model' => $model, 'model2' => $model2,'model3'=>$model3
+        ));
     }
     public function actionCreate() {
         $model = new Jual;
@@ -143,6 +178,45 @@ class JualController extends Controller {
         ));
     }
 
+    public function actionCreateKeteranganExisting($id, $keterangan) {
+        $model = new Jual;
+        $model2 = new Obat;
+        $model3 = new ListPenjualan;
+// Uncomment the following line if AJAX validation is needed
+// $this->performAjaxValidation($model);
+
+        if (isset($_POST['Obat'])) {
+            if ($_POST['Obat']['jumlah'] == 0) {
+                $this->redirect(array('CreateKeteranganExisting', 'id' => $id, 'keterangan' => $keterangan));
+            }
+            $model3->id_jual = $id;
+            $id_obat = $_POST['Obat']['id_obat'];
+            $result_nama = Yii::app()->db->createCommand("SELECT nama FROM obat WHERE `id_obat`= '$id_obat'")->queryAll();
+            $nama = $result_nama["0"]["nama"];
+
+            $result_harga_satuan = Yii::app()->db->createCommand("SELECT hargajual FROM obat WHERE `id_obat`= '$id_obat'")->queryAll();
+            $harga_satuan = $result_harga_satuan["0"]["hargajual"];
+
+            $total_harga = $_POST['Obat']['jumlah'] * $harga_satuan;
+
+            $model3->nama_obat = $nama;
+
+            $model3->qty = $_POST['Obat']['jumlah'];
+            $model3->harga_satuan = $harga_satuan;
+            $model3->total = $total_harga;
+            $model3->id_obat = $id_obat;
+            $model3->keterangan = $keterangan;
+            if ($model3->save())
+                $connection_delete = Yii::app()->db;
+            $connection_delete->createCommand("DELETE FROM dummy_list_obat WHERE id_obat='$id_obat'")->execute();
+            $this->redirect(array('CreateKeteranganExisting', 'id' => $id, 'keterangan' => $keterangan));
+        }
+
+        $this->render('createKeteranganExisting', array(
+            'model' => $model, 'model2' => $model2, 'id' => $id, 'keterangan' => $keterangan
+        ));
+    }
+    
     /**
      * Updates a particular model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -243,6 +317,21 @@ class JualController extends Controller {
         </FONT><?php
     }
 
+    public function actionSelectKeterangan() {
+        $keterangan = $_POST['ListPenjualan']['keterangan'];
+        $banyak = $_POST['Obat']['jumlah'];
+        ?><FONT SIZE="5"><B>Banyak Pembelian : <?php echo($banyak);?><br><br>Keterangan&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp: <br><br><i><u><?php echo $keterangan; ?><i></u></B>
+        </FONT><?php
+    }
+    
+        public function actionSelectKeteranganparam($keterangan) {
+        $keterangan = $keterangan;
+        $banyak = $_POST['Obat']['jumlah'];
+        ?><FONT SIZE="5"><B>Banyak Pembelian : <?php echo($banyak);?><br><br>Keterangan&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp: <br><br><i><u><?php echo $keterangan; ?><i></u></B>
+        </FONT><?php
+    }
+
+    
     public function actionCheckboxUpdate($id) {
         if (Yii::app()->request->isPostRequest) {
             if (isset($_POST['my_checkbox'])) {

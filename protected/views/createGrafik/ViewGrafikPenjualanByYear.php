@@ -1,4 +1,15 @@
 <?php
+    $this->widget('booster.widgets.TbAlert', array(
+    'fade' => true,
+    'closeText' => '&times;', // false equals no close link
+    'events' => array(),
+    'htmlOptions' => array(),
+    'userComponentId' => 'user',
+    'alerts' => array( // configurations per alert type
+        'error' => array('closeText' => 'AAARGHH!!')
+    ),
+));?>
+<?php
 $test = array();
 $test[0] = "Pilih Tahun Yang Akan Dicari";
 $date= date('Y-m-d');

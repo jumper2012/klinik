@@ -1,5 +1,5 @@
 <?php
-$imagePath = "C:/xampp/htdocs/Klinik_Elivin/images";
+$imagePath = "C:/xampp/htdocs/klinik/images";
 //$baseUrl = Yii::app()->assetManager->publish($imagePath);
 ?>
 <?php
@@ -11,7 +11,7 @@ $bulan = date('M', $timestamp);
 $orderdate = explode('-', $message);
 $tahunbulan = $orderdate[0] . "-" . $orderdate[1];
 //echo $tahunbulan; 
-$result_laporan = array();
+//$result_laporan = array();
 $count_untung = 0;
 ?>
 <table width="900">
@@ -35,7 +35,7 @@ $count_untung = 0;
                            {
                                echo "01 ".$bulan." ".$orderdate[0];
                            }                                                      {
-                               echo "01 - ".$orderdate[2]." ".$bulan." ".$orderdate[0];
+                               echo $orderdate[2]." ".$bulan." ".$orderdate[0];
                            }
                         ?>
                         </h3>
@@ -58,18 +58,17 @@ $count_untung = 0;
 
 <?php
 $counter_no=1;
-for ($temp_i = 1; $temp_i <= $orderdate[2]; $temp_i++) {
-    if ($temp_i <= 9) {
-        $time = $tahunbulan . "-0" . $temp_i;
+    if ($orderdate[2] <= 9) {
+        $time = $tahunbulan . "-0" . $orderdate[2];
     } else {
-        $time = $tahunbulan . "-" . $temp_i;
+        $time = $tahunbulan . "-" . $orderdate[2];
     }
-    $result_laporan[$temp_i - 1] = Yii::app()->db->createCommand("SELECT obat.nama, laporan.tgl, laporan.id_laporan, laporan.keterangan, laporan.masuk, laporan.keluar, 
+    $result_laporan= Yii::app()->db->createCommand("SELECT obat.nama, laporan.tgl, laporan.id_laporan, laporan.keterangan, laporan.masuk, laporan.keluar, 
     laporan.sisa, laporan.untung,obat.hargabeli, obat.hargajual FROM laporan INNER JOIN obat ON laporan.id_obat = obat.id_obat
         WHERE laporan.tgl = '$time'"
             )->queryAll();    
     $temp_counter = 0;
-    foreach ($result_laporan[$temp_i - 1] as $value)
+    foreach ($result_laporan as $value)
     {    
         ?>
                     <tr height="25">
@@ -187,7 +186,7 @@ for ($temp_i = 1; $temp_i <= $orderdate[2]; $temp_i++) {
                         </td>
 
                     </tr>
-            <?php }} ?>
+            <?php } ?>
             </table>
         </td>        
     </tr>

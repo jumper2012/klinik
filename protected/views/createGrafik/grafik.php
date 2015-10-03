@@ -1,3 +1,14 @@
+<?php
+    $this->widget('booster.widgets.TbAlert', array(
+    'fade' => true,
+    'closeText' => '&times;', // false equals no close link
+    'events' => array(),
+    'htmlOptions' => array(),
+    'userComponentId' => 'user',
+    'alerts' => array( // configurations per alert type
+        'error' => array('closeText' => 'AAARGHH!!')
+    ),
+));?>
 <table width="100%">
     <tr>
         <td colspan="2">

@@ -1,47 +1,67 @@
-<?php
-$this->menu = array(
-    array('label' => 'List Pasien', 'url' => array('index')),
-    array('label' => 'Create Pasien', 'url' => array('create')),
-);
-
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-$('.search-form').toggle();
-return false;
-});
-$('.search-form form').submit(function(){
-$.fn.yiiGridView.update('pasien-grid', {
-data: $(this).serialize()
-});
-return false;
-});
-");
-?>
-<table width='100%'>
+<table width='100%'">
     <tr>
-        <td width="80%">
-            <h1><center>Daftar Pasien </center></h1>
+        <td width="25%">
+
         </td>
-        <td align="center">
+        <td width="50%">
+            <h1><FONT SIZE="6"><B><u><center>Daftar Pasien</center></u></B></FONT></h1>
+        </td>
+        <td align="center" width="25%">
             <?php
-            echo CHtml::Button('Buat Daftar Pasien Baru', array('submit' => array('/pasien/create')));
+            $this->widget(
+                    'booster.widgets.TbButton', array(
+                'label' => 'Buat Daftar Pasien Baru',
+                'context' => 'primary',
+                'buttonType' => 'link',
+                'url' => "index.php?r=pasien/create"
+                    )
+            );
+            //echo CHtml::Button('Buat Daftar Pasien Baru', array('submit' => array('/pasien/create')));
             ?>
         </td>
     </tr>
 </table>
 <hr>
-<?php echo CHtml::link('Advanced Search', '#', array('class' => 'search-button')); ?>
-<div class="search-form" style="display:none">
+<center>
     <?php
-    $this->renderPartial('_search', array(
-        'model' => $model,
+    $form = $this->beginWidget('booster.widgets.TbActiveForm', array(
+        'id' => 'pasien-form',
+        'enableAjaxValidation' => false,
     ));
-    ?>    
-</div><!-- search-form -->
+    ?>
+
+    <?php echo $form->errorSummary($model); ?>
+
+    <?php
+    $nama = CHtml::listData(Pasien::model()->findAll(), 'nama', 'nama');
+
+
+    $this->widget('ext.select2.ESelect2', array(
+        'model' => $model,
+        'attribute' => 'nama',
+        'data' => $nama,
+        'htmlOptions' => array(
+            'style' => 'width:550px',
+            'prompt' => '-- Pilih Nama Pasien --',
+        ),)
+    );
+    ?> &nbsp;
+    <?php
+    $this->widget('booster.widgets.TbButton', array(
+        'buttonType' => 'submit',
+        'context' => 'primary',
+        'label' => $model->isNewRecord ? 'Search' : 'Save',
+    ));
+    ?>
+    <?php $this->endWidget(); ?>
+</center>
+<hr>
+
+
 <?php
 $this->widget('booster.widgets.TbGridView', array(
     'id' => 'pasien-grid',
-    'dataProvider' => $model->search(),
+    'dataProvider' => $dataProvider,
     'filter' => $model,
     'emptyText' => 'Tidak ada laporan :)',
     'template' => "{summary}{items}{pager}",
@@ -50,12 +70,16 @@ $this->widget('booster.widgets.TbGridView', array(
         //'id_pasien',
         'nama',
         //'tanggal_lahir',
-        'alamat',
-        'pekerjaan',
-        'jenis_kelamin',
         //'suku',
-        'agama',
+        //'agama',
+        //'pekerjaan',
+        'alamat',
+        'jenis_kelamin',
         'tel',
+//        array(
+//            'header' => 'No. Kartu R.Umum',
+//            'value' => '$data->kartuRawatUmums->trawatUmums->id_kru',
+//        ),
         //*/
         array(
             'class' => 'booster.widgets.TbButtonColumn',

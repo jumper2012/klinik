@@ -117,14 +117,53 @@ class PasienController extends Controller {
         ));
     }
 
-    public function actionAdmin() {
+    public function actionAdmin2($nama) {
         $model = new Pasien('search');
-        $model->unsetAttributes();  // clear any default values
+        $model->unsetAttributes();
+        // clear any default values
+
+       if (isset($_POST['Pasien'])) {
+            $id_pasien = $_POST['Pasien']["nama"];
+            $this->redirect(array('admin2', 'nama' => $id_pasien));
+        } 
+
         if (isset($_GET['Pasien']))
             $model->attributes = $_GET['Pasien'];
 
+        $criteria = new CDbCriteria;
+        $criteria->compare('nama', $nama, true);
+        $dataProvider = new CActiveDataProvider(new Pasien, array(
+            'criteria' => $criteria,
+        ));
         $this->render('admin', array(
             'model' => $model,
+            'dataProvider' => $dataProvider
+        ));
+    }
+    
+    public function actionAdmin() {
+        $model = new Pasien('search');
+        $model->unsetAttributes();
+        // clear any default values
+
+        if (isset($_POST['Pasien'])) {
+            $id_pasien = $_POST['Pasien']["nama"];
+            $this->redirect(array('admin2', 'nama' => $id_pasien));
+        } else {
+            $id_pasien = "";
+        }
+
+        if (isset($_GET['Pasien']))
+            $model->attributes = $_GET['Pasien'];
+
+        $criteria = new CDbCriteria;
+        $criteria->compare('nama', $id_pasien, true);
+        $dataProvider = new CActiveDataProvider(new Pasien, array(
+            'criteria' => $criteria,
+        ));
+        $this->render('admin', array(
+            'model' => $model,
+            'dataProvider' => $dataProvider
         ));
     }
 

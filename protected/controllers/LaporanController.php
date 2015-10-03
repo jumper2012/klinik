@@ -35,10 +35,10 @@ class LaporanController extends Controller {
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
                 'actions' => array('admin', 'delete'),
                 'users' => array('admin'),
-            ),/*
-            array('deny', // deny all users
-                'users' => array('*'),
-            ),*/
+            ), /*
+                  array('deny', // deny all users
+                  'users' => array('*'),
+                  ), */
         );
     }
 
@@ -95,31 +95,44 @@ class LaporanController extends Controller {
         ));
     }
 
-     public function actionByDate($tanggal) {
+    public function actionByDate($tanggal) {
         $model = new Laporan();
-        if (isset($_POST['Laporan'])) { 
+        if (isset($_POST['Laporan'])) {
+            if ($_POST['Laporan']['tgl'] == 0) {
+                $user = Yii::app()->getComponent('user');
+                $user->setFlash(
+                        'error', '<strong>Tanggal Belum Diisi!</strong> Silahkan Masukkan Tanggal pada Form.'
+                );
+                $this->redirect(array('ByDate', 'tanggal' => $tanggal));
+            }
             $model->attributes = $_POST['Laporan'];
             $tanggal = $model->tgl;
-            $this->redirect(array('ByDate', 'tanggal'=>$tanggal));
+            $this->redirect(array('ByDate', 'tanggal' => $tanggal));
         }
         $this->render('DataByDate', array(
-            'tanggal' =>$tanggal, 'model' => $model,
+            'tanggal' => $tanggal, 'model' => $model,
         ));
     }
 
-     public function actionByName($id) {
+    public function actionByName($id) {
         $model = new Laporan();
-        if (isset($_POST['Laporan'])) { 
+        if (isset($_POST['Laporan'])) {
+            if ($_POST['Laporan']['id_obat'] == 0) {
+                $user = Yii::app()->getComponent('user');
+                $user->setFlash(
+                        'error', '<strong>Nama Obat Belum Diisi!</strong> Silahkan Masukkan Nama Obat pada Form.'
+                );
+                $this->redirect(array('ByName', 'id' => $id));
+            }
             $model->attributes = $_POST['Laporan'];
             $id = $model->id_obat;
-            $this->redirect(array('ByName', 'id'=>$id));
+            $this->redirect(array('ByName', 'id' => $id));
         }
         $this->render('DataByName', array(
-            'id' =>$id, 'model' => $model,
+            'id' => $id, 'model' => $model,
         ));
     }
-    
-    
+
     /**
      * Deletes a particular model.
      * If deletion is successful, the browser will be redirected to the 'admin' page.
@@ -133,8 +146,7 @@ class LaporanController extends Controller {
 // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
             if (!isset($_GET['ajax']))
                 $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        }
-        else
+        } else
             throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
     }
 

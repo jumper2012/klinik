@@ -33,12 +33,8 @@ $form = $this->beginWidget(
             $this->widget('ext.select2.ESelect2', array(
                 'model' => $model2,
                 'attribute' => 'id_obat',
-//                'name' => 'selectInput',
                 'data' => $nama,
                 'htmlOptions' => array(
-//                'wrapperHtmlOptions' => array(
-//                    'class' => 'col-sm-5',
-//                ),
                     'style' => 'width:330px',
                     'prompt' => '-- Pilih Obat --',
                     'ajax' => array(
